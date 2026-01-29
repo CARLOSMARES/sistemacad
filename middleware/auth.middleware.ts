@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_default_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'SISTEMA_CAD_METRIX_NETWORKS_2026_S3';
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
 

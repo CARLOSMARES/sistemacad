@@ -1,25 +1,41 @@
-import express from 'express';
-import jwt from 'jsonwebtoken';
-import { authenticateToken } from '../middleware/auth.middleware.js'; // Asegúrate de usar .js por el type: module
+import { Router } from "express";
+import { login, register } from "../controllers/auth.controller.js";
+import { authenticateToken } from "../middleware/auth.middleware.js";
 
-const router = express.Router();
+const router = Router();
 
-// Ruta pública (Login)
-router.post('/login', (req, res) => {
-    // Aquí validarías al usuario con MySQL/TypeORM
-    const user = { id: 1, username: 'carlos' };
+/**
+ * @openapi
+ * components:
+ * securitySchemes:
+ * bearerAuth:
+ * type: http
+ * scheme: bearer
+ * bearerFormat: JWT
+ */
 
-    // Generar el token
-    const token = jwt.sign(user, process.env.JWT_SECRET!, { expiresIn: '30d' });
-    res.json({ token });
-});
+// Rutas Públicas
+router.post("/auth/register", register);
+router.post("/auth/login", login);
 
-// Ruta protegida (Perfil)
-router.get('/profile', authenticateToken, (req, res) => {
-    res.json({
-        message: "Bienvenido a tu perfil",
-        userData: (req as any).user
-    });
+// Rutas Protegidas (Ejemplo para el CAD)
+/**
+ * @openapi
+ * /cad:
+ * post:
+ * summary: Crear un nuevo registro CAD
+ * tags: [CAD]
+ * security:
+ * - bearerAuth: []
+ * responses:
+ * 201:
+ * description: Creado
+ * 401:
+ * description: No autorizado
+ */
+router.post("/cad", authenticateToken, (req, res) => {
+    // Aquí iría la lógica del controlador de CAD
+    res.status(201).json({ message: "Acceso concedido al CAD" });
 });
 
 export default router;
