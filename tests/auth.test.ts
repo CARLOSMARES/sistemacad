@@ -1,5 +1,5 @@
-import request from 'supertest';
 import express from 'express';
+import request from 'supertest';
 import { authenticateToken } from '../middleware/auth.middleware.js';
 
 const app = express();
@@ -21,7 +21,7 @@ describe('Auth Middleware', () => {
         const response = await request(app)
             .get('/test-auth')
             .set('Authorization', 'Bearer token_falso');
-        
+
         expect(response.status).toBe(403);
     });
 });

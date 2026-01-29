@@ -4,7 +4,10 @@
     "rootDir": "./",
     "module": "nodenext",
     "target": "esnext",
-    "types": [],
+    "types": [
+      "node",
+      "jest"
+    ],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
