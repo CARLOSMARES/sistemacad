@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { AppDataSource } from './config/data.source.js';
 import router from './routes/routes.js';
 
 const app = express();
@@ -26,6 +27,16 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api', router);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+AppDataSource.initialize()
+    .then(() => {
+        console.log("Conexion a la base de datos establecida con exito.");
+
+        app.listen(PORT, () => {
+            console.log(`Servidor escuchando en el puerto ${PORT}`);
+        });
+
+
+    })
+    .catch((error) => {
+        console.error("Error al conectar a la base de datos:", error);
+    });
