@@ -1,0 +1,55 @@
+name: CI/CD Sistemacad - SeeNode
+
+on:
+  push:
+    branches: [main] # Se activa al subir cambios a main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      # Levantamos una DB temporal para los tests si es necesario
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Lint / Type Check
+        run: npm run build # Verificamos que el código compile (tsc)
+
+      - name: Run Tests
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: test_db
+        run: npm run test
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger SeeNode Deployment
+        # SeeNode despliega automáticamente al detectar el push en GitHub.
+        # Este paso es solo para confirmar que el CI terminó exitosamente.
+        run: echo "CI Finalizado. SeeNode iniciará el despliegue automático."
