@@ -11,10 +11,13 @@
     "url": "git+https://github.com/CARLOSMARES/sistemacad.git"
   },
   "license": "ISC",
-  "author": "",
+  "author": "Carlos Ignacio Olano Mares",
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "node --loader ts-node/esm main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
