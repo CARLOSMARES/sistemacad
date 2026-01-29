@@ -1,0 +1,27 @@
+# Dependencias
+node_modules
+npm-debug.log
+
+# Compilación de TypeScript
+dist
+out
+*.tsbuildinfo
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Git
+.git
+.gitignore
+
+# Configuración y Secretos
+.env
+.env.*
+*.md
+
+# Otros
+.vscode
+.idea
+.DS_Store
