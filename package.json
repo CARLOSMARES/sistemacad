@@ -18,9 +18,11 @@
     "build": "tsc",
     "start": "node dist/main.js",
     "dev": "node --loader ts-node/esm main.ts",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "npm test -- --watchAll"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
@@ -32,6 +34,7 @@
     "typeorm": "^0.3.28"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
