@@ -1,21 +1,26 @@
 import dotenv from "dotenv";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Configuración para obtener rutas en ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
 export const AppDataSource = new DataSource({
     type: "mysql",
-    host: process.env.DB_HOST || "localhost",
-    // Si en docker-compose usaste 3307 hacia afuera, 
-    // pero la app corre DENTRO de la red de docker, debe usar 3306.
+    host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT) || 3306,
-    username: process.env.DB_USER || "metrix_cad",
-    password: process.env.DB_PASSWORD || "rKeEIErZskcH",
-    database: process.env.DB_NAME || "metrix_cad",
-    synchronize: true, // true: crea tablas automáticamente (solo en desarrollo)
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    synchronize: true, 
     logging: true,
-    entities: ["dist/models/**/*.js"], // Importante: apunta a los archivos compilados
-    migrations: ["dist/migrations/**/*.js"],
+    // Usamos path.join para que funcione tanto en local como en Docker
+    entities: [path.join(__dirname, "../models/**/*.js")], 
+    migrations: [path.join(__dirname, "../migrations/**/*.js")],
     subscribers: [],
 });
