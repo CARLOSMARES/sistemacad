@@ -5,7 +5,7 @@ import router from './routes/routes.js';
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.API_PORT || 3000;
 
 app.use(cors({
     origin: '*',
@@ -34,8 +34,6 @@ AppDataSource.initialize()
         app.listen(PORT, () => {
             console.log(`Servidor escuchando en el puerto ${PORT}`);
         });
-
-
     })
     .catch((error) => {
         console.error("Error al conectar a la base de datos:", error);
