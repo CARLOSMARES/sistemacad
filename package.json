@@ -18,7 +18,7 @@
     "build": "tsc",
     "start": "node dist/main.js",
     "dev": "node --loader ts-node/esm main.ts",
-    "test": "jest --watchAll"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll"
   },
   "dependencies": {
     "cors": "^2.8.6",
