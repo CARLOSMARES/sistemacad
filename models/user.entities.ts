@@ -36,10 +36,10 @@ export class User {
 
     @Column({
         type: "enum",
-        enum: ["operador", "oficial"],
-        default: "operador"
+        enum: ["operator", "officer", "admin"],
+        default: "operator"
     })
-    role!: "operador" | "oficial";
+    role!: "operator" | "officer" | "admin";
 
     // Hook: Se ejecuta antes de insertar en la base de datos
     @BeforeInsert()
