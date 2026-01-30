@@ -3,30 +3,56 @@ import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "../config/data.source.js";
 
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { CreateUserDto } from "../dtos/user.dto.js"; // Asegúrate de que la ruta sea correcta
+
 import { User } from "../models/user.entities.js";
 
 const userRepository = AppDataSource.getRepository(User);
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { email, password, role } = req.body;
+        // 1. Transformar el body a una instancia del DTO
+        const createUserDto = plainToInstance(CreateUserDto, req.body);
 
-        // Validar si el usuario ya existe
+        // 2. Validar los datos del DTO
+        const errors = await validate(createUserDto);
+        if (errors.length > 0) {
+            return res.status(400).json({
+                message: "Validación fallida",
+                errors: errors.map(err => ({
+                    property: err.property,
+                    constraints: err.constraints
+                }))
+            });
+        }
+
+        const { email, password, role } = createUserDto;
+
+        // 3. Validar si el usuario ya existe
         const existingUser = await userRepository.findOneBy({ email });
         if (existingUser) {
             return res.status(400).json({ message: "El usuario ya existe" });
         }
 
-        // Crear instancia (el hook @BeforeInsert en la entidad User hará el hash del password)
+        // 4. Crear instancia y guardar
+        // El hook @BeforeInsert en user.entities.ts procesará el password
         const newUser = userRepository.create({ email, password, role });
         await userRepository.save(newUser);
 
-        res.status(201).json({ message: "Usuario registrado con éxito", id: newUser.id });
+        res.status(201).json({
+            message: "Usuario registrado con éxito",
+            id: newUser.id
+        });
+
     } catch (error: any) {
-        res.status(500).json({ message: "Error al registrar usuario", error: error.message });
+        res.status(500).json({
+            message: "Error al registrar usuario",
+            error: error.message
+        });
     }
 };
-
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
