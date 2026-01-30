@@ -26,7 +26,7 @@ describe('Auth Middleware', () => {
             .set('Authorization', 'Bearer token_falso');
 
         expect(response.status).toBe(403);
-        expect(response.body.message).toBe('Token no válido o expirado.');
+        expect(response.body.message).toBe('Token inválido o expirado.');
     });
 
     it('debería permitir el acceso con un token válido', async () => {

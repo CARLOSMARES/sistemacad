@@ -50,7 +50,7 @@ export const login = async (req: Request, res: Response) => {
         // Generar Token JWT
         const token = jwt.sign(
             { id: user.id, role: user.role },
-            process.env.JWT_SECRET || "secret",
+            process.env.JWT_SECRET || "SISTEMA_CAD_METRIX_NETWORKS_2026_S3",
             { expiresIn: "30d" }
         );
 
