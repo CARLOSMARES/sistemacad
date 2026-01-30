@@ -1,12 +1,12 @@
 import cors from 'cors';
 import express from 'express';
 import { AppDataSource } from './config/data.source.js';
-import { User } from './models/user.entities.js'; // Importamos la entidad User
+import { runSeeder } from './config/seeder.js'; // 1. Importamos el seeder
 import router from './routes/routes.js';
 
 const app = express();
 
-const PORT = process.env.API_PORT || 3000; //
+const PORT = process.env.API_PORT || 3000;
 
 app.use(cors({
     origin: '*',
@@ -21,48 +21,18 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
+
     res.status(200).send("Health Check!");
+
 });
 
 app.use('/api', router);
 
-// Función de Seeding Automático
-const runSeeder = async () => {
-    const userRepository = AppDataSource.getRepository(User); //
-
-    // Datos del administrador inicial
-    const adminEmail = 'admin@sistema-cad.com';
-
-    const adminExists = await userRepository.findOneBy({ email: adminEmail }); //
-
-    if (!adminExists) {
-        console.log("Poblando base de datos con usuarios iniciales...");
-
-        const initialUsers = [
-            {
-                email: adminEmail,
-                password: 'admin123',
-                role: 'oficial' // Rol oficial como admin
-            },
-            {
-                email: 'usuario@sistema-cad.com',
-                password: 'usuario123',
-                role: 'operador' // Rol operador
-            }
-        ];
-
-        // El hook hashPassword de user.entities.ts se encargará del cifrado
-        const users = userRepository.create(initialUsers);
-        await userRepository.save(users);
-        console.log("Usuarios iniciales creados con éxito.");
-    }
-};
-
 AppDataSource.initialize()
-    .then(async () => { // Marcamos como async para ejecutar el seed
+    .then(async () => { // 2. Agregamos 'async' aquí
         console.log("Conexion a la base de datos establecida con exito.");
 
-        // Ejecutar el seed antes de iniciar el servidor
+        // 3. Llamamos al seeder de forma automática
         await runSeeder();
 
         app.listen(PORT, () => {
