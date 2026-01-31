@@ -45,6 +45,12 @@ export const createCad = async (req: Request, res: Response) => {
 export const updateCad = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+
+        // Validar que el ID existe y es string para evitar errores de exactOptionalPropertyTypes
+        if (!id || typeof id !== 'string') {
+            return res.status(400).json({ message: "ID no proporcionado o no válido" });
+        }
+
         const dto = plainToInstance(UpdateCadDto, req.body);
         const errors = await validate(dto);
 
@@ -52,8 +58,12 @@ export const updateCad = async (req: Request, res: Response) => {
             return res.status(400).json({ errors });
         }
 
-        const cad = await cadRepository.findOneBy({ id });
-        if (!cad) return res.status(404).json({ message: "CAD no encontrado" });
+        // Corrección: findOneBy recibe un objeto directo con el ID
+        const cad = await cadRepository.findOneBy({ id: id as any });
+
+        if (!cad) {
+            return res.status(404).json({ message: "CAD no encontrado" });
+        }
 
         cadRepository.merge(cad, req.body);
         await cadRepository.save(cad);
