@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { AppDataSource } from "../config/data.source.js";
 import { CreateCadDto, UpdateCadDto } from "../dtos/cad.dto.js";
 import { Cad } from "../models/cad.entities.js";
